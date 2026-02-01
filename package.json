@@ -1,0 +1,20 @@
+{
+  "name": "telegram-audio-bot",
+  "version": "1.0.0",
+  "description": "Telegram Voice-to-Text bot on Cloudflare Workers AI",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail",
+    "login": "wrangler login",
+    "set-webhook": "curl -X POST \"https://api.telegram.org/bot$BOT_TOKEN/setWebhook?url=https://telegram-audio-bot.triune-safest02.workers.dev\"",
+    "delete-webhook": "curl -X POST \"https://api.telegram.org/bot$BOT_TOKEN/deleteWebhook?url=https://telegram-audio-bot.triune-safest02.workers.dev\"",
+    "info-webhook": "curl \"https://api.telegram.org/bot$BOT_TOKEN/getWebhookInfo\""
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240101.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^4.61.1"
+  }
+}

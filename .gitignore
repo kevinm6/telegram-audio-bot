@@ -1,0 +1,4 @@
+wrangler.toml
+.venv
+node_modules
+package-lock.json
