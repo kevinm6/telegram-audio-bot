@@ -17,7 +17,7 @@ export default {
 
       const chatId = message.chat.id;
       const text = message.text || "";
-      const userLang = message.from?.language_code?.split("-")[0] || "en"; // e.g., "it" or "en"
+      const userLang = message.from?.language_code?.split("-")[0] || "en";
 
       // Handle Commands
       if (text === "/start") {
@@ -25,7 +25,7 @@ export default {
           userLang === "it"
             ? "✅ Bot attivo! Inviami un messaggio vocale/audio e lo trascrivo."
             : "✅ Bot connected! Send me voice/audio message and I transcribe it.";
-        await sendMessage(env.BOT_TOKEN, chatId, escapeMarkdown(startMessage));
+        await sendMessage(env.BOT_TOKEN, chatId, startMessage);
         return new Response("OK");
       }
 
@@ -33,7 +33,7 @@ export default {
         await sendMessage(
           env.BOT_TOKEN,
           chatId,
-          escapeMarkdown("🎙 *Audio2Text Bot*\nSend me a voice message and I'll transcribe it using Whisper AI."),
+          "🎙 *Audio2Text Bot*\nSend me a voice message and I'll transcribe it using Whisper AI.",
         );
         return new Response("OK");
       }
@@ -45,7 +45,7 @@ export default {
         const statusMsgResponse = await sendMessage(
           env.BOT_TOKEN,
           chatId,
-          escapeMarkdown("_Transcribing..._"),
+          "_Transcribing..._",
           message.message_id ?? null,
         );
         const statusMsgData: any = await statusMsgResponse.json();
@@ -74,11 +74,12 @@ export default {
           userLang === "it"
             ? "⚠️ Non posso trascrivere l'audio."
             : "⚠️ Could not transcribe audio.";
-        const transcription = aiResponse.text ? escapeMarkdown(aiResponse.text) : errorTranscription;
+        const transcription = aiResponse.text ?? errorTranscription;
+        const escapedTranscription = escapeMarkdown(transcription);
         await sendMessage(
           env.BOT_TOKEN,
           chatId,
-          `🎙 \`${transcription}\``,
+          `🎙 \`${escapedTranscription}\``,
           message.message_id,
         );
 
@@ -107,7 +108,9 @@ async function sendMessage(
   text: string,
   replyId?: number,
 ) {
+  // Check Markdown
   const isFormatted = text.includes('`') || text.includes('_') || text.includes('*');
+
   return await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
