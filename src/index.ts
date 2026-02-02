@@ -46,10 +46,10 @@ export default {
           env.BOT_TOKEN,
           chatId,
           escapeMarkdown("_Transcribing..._"),
-          message.message_id,
+          message.message_id ?? null,
         );
         const statusMsgData: any = await statusMsgResponse.json();
-        const statusMsgId = statusMsgData.result.message_id;
+        const statusMsgId = statusMsgData.result.message_id ?? null;
 
         // Get File from Telegram
         const fileResponse = await fetch(
