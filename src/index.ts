@@ -49,7 +49,7 @@ export default {
           message.message_id ?? null,
         );
         const statusMsgData: any = await statusMsgResponse.json();
-        const statusMsgId = statusMsgData.result.message_id ?? null;
+        const statusMsgId = statusMsgData.result?.message_id;
 
         // Get File from Telegram
         const fileResponse = await fetch(
@@ -70,13 +70,16 @@ export default {
           language: userLang,
         });
 
-        const transcription =
-          escapeMarkdown(aiResponse.text) || "⚠️ Could not transcribe audio.";
+        const errorTranscription =
+          userLang === "it"
+            ? "⚠️ Non posso trascrivere l'audio."
+            : "⚠️ Could not transcribe audio.";
+        const transcription = aiResponse.text ? escapeMarkdown(aiResponse.text) : errorTranscription;
         await sendMessage(
           env.BOT_TOKEN,
           chatId,
-          `🎙 ${transcription}`,
-          message.messageId,
+          `🎙 \`${transcription}\``,
+          message.message_id,
         );
 
         // Cleanup: delete status message ("Transcribing...")
@@ -104,13 +107,14 @@ async function sendMessage(
   text: string,
   replyId?: number,
 ) {
+  const isFormatted = text.includes('`') || text.includes('_') || text.includes('*');
   return await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: chatId,
       text: text,
-      parse_mode: "MarkdownV2",
+      parse_mode: isFormatted ? "MarkdownV2" : undefined,
       reply_to_message_id: replyId,
     }),
   });
