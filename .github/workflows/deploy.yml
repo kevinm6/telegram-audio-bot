@@ -10,18 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Calculate Hash and Deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Calculate Hash
+        id: calc_hash
         run: |
+          # Calculate hash and save it to GH-Action output
           HASH_FILE=$(sha256sum src/index.ts | awk '{ print $1 }')
-          npx wrangler deploy --account-id "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"  --define DEPLOYED_HASH:\"'$HASH_FILE'\"
+          echo "SOURCE_HASH=$HASH_FILE" >> $GITHUB_OUTPUT
+
+      - name: Deploy with Wrangler Action
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --var DEPLOYED_HASH:${{ steps.calc_hash.outputs.source_hash }}
