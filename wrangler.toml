@@ -4,3 +4,6 @@ compatibility_date = "2026-02-01"
 
 [ai]
 binding = "AI"
+
+[vars]
+DEPLOYED_HASH = "local-dev"

@@ -39,8 +39,8 @@ export default {
       }
 
       if (text === "/verifysha256") {
-        // It will be replaced by the real hash string during build/deploy
-        const current_hash = typeof DEPLOYED_HASH !== "undefined" ? DEPLOYED_HASH : "development";
+        const current_hash = env.DEPLOYED_HASH || "development";
+        console.log("current_hash => ", current_hash);
 
         const verifyLabel =
           userLang === "it"
