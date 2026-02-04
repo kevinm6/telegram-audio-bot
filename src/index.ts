@@ -1,5 +1,5 @@
 // It will be replaced by the real hash string during build/deploy
-declare const DEPLOYED_HASH = "";
+const VERSION_HASH = typeof DEPLOYED_HASH !== "undefined" ? DEPLOYED_HASH : "development";
 
 export interface Env {
   AI: any;
@@ -41,11 +41,11 @@ export default {
         return new Response("OK");
       }
 
-      if (text === "/verifySha256") {
+      if (text === "/verifysha256") {
         const verifyMessage =
           userLang === "it"
-            ? `🔐 **Verifica Trasparenza**\nHash SHA-256 del codice sorgente:\n\`${DEPLOYED_HASH}\``
-            : `🔐 **Transparency Verification**\nSource code SHA-256 Hash:\n\`${DEPLOYED_HASH}\``;
+            ? `🔐 **Verifica Trasparenza**\nHash SHA-256 del codice sorgente:\n\`${VERSION_HASH}\``
+            : `🔐 **Transparency Verification**\nSource code SHA-256 Hash:\n\`${VERSION_HASH}\``;
         await sendMessage(env.BOT_TOKEN, chatId, verifyMessage);
         return new Response("OK");
       }
