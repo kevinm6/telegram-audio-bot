@@ -2,7 +2,7 @@
 File          : README
 Author        : KevinM6
 Date Created  : 01 Feb 2026, 10:39
-Last Modified : 04 Feb 2026, 13:36
+Last Modified : 04 Feb 2026, 16:03
 ---
 
 # Telegram Audio Bot
@@ -20,7 +20,7 @@ instead of continuous polling, and it's using [whisper](https://developers.cloud
 
 ## Code Transparency & Verification
 
-To ensure that the code running on *Cloudflare Workers* matches the source code in this *repository*, you can use the `/verifySha256` command within the bot.  
+To ensure that the code running on *Cloudflare Workers* matches the source code in this *repository*, you can use the `/verifysha256` command within the bot.  
 This returns the **SHA-256 hash** of the `src/index.ts` file generated at the moment of deployment. You can verify this independently by cloning the repository and running:
 
 ```bash
