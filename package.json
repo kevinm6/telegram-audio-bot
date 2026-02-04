@@ -4,8 +4,8 @@
   "description": "Telegram Voice-to-Text bot on Cloudflare Workers AI",
   "main": "src/index.ts",
   "scripts": {
-    "deploy": "FILE_HASH=$(sha256sum src/index.ts | awk '{ print $1 }') && wrangler deploy --define DEPLOYED_HASH:\"$FILE_HASH\"",
-    "test-deploy": "FILE_HASH=$(sha256sum src/index.ts | awk '{ print $1 }') && wrangler deploy --dry-run --outdir ./dist-check --define DEPLOYED_HASH:\"$FILE_HASH\"",
+    "deploy": "FILE_HASH=$(sha256sum src/index.ts | awk '{ print $1 }') && wrangler deploy --define DEPLOYED_HASH:\"'$FILE_HASH'\"",
+    "test-deploy": "FILE_HASH=$(sha256sum src/index.ts | awk '{ print $1 }') && wrangler deploy --dry-run --outdir ./dist-check --define DEPLOYED_HASH:\"'$FILE_HASH'\"",
     "dev": "wrangler dev",
     "tail": "wrangler tail",
     "login": "wrangler login",

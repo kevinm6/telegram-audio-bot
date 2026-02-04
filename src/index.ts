@@ -1,6 +1,3 @@
-// It will be replaced by the real hash string during build/deploy
-const VERSION_HASH = typeof DEPLOYED_HASH !== "undefined" ? DEPLOYED_HASH : "development";
-
 export interface Env {
   AI: any;
   BOT_TOKEN: string;
@@ -42,10 +39,15 @@ export default {
       }
 
       if (text === "/verifysha256") {
-        const verifyMessage =
+        // It will be replaced by the real hash string during build/deploy
+        const current_hash = typeof DEPLOYED_HASH !== "undefined" ? DEPLOYED_HASH : "development";
+
+        const verifyLabel =
           userLang === "it"
-            ? `🔐 **Verifica Trasparenza**\nHash SHA-256 del codice sorgente:\n\`${VERSION_HASH}\``
-            : `🔐 **Transparency Verification**\nSource code SHA-256 Hash:\n\`${VERSION_HASH}\``;
+            ? `🔐 **Verifica Trasparenza**\nHash SHA\\-256 del codice sorgente:`
+            : `🔐 **Transparency Verification**\nSource code SHA\\-256 Hash:`;
+        const escapedHash = escapeMarkdown(current_hash);
+        const verifyMessage = `${verifyLabel}\n\n\`${escapedHash}\``;
         await sendMessage(env.BOT_TOKEN, chatId, verifyMessage);
         return new Response("OK");
       }
@@ -123,7 +125,7 @@ async function sendMessage(
   // Check Markdown
   const isFormatted = text.includes('`') || text.includes('_') || text.includes('*');
 
-  return await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -133,6 +135,13 @@ async function sendMessage(
       reply_to_message_id: replyId,
     }),
   });
+
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error("Telegram send error:\n", errorBody);
+  }
+  
+  return res;
 }
 
 function escapeMarkdown(text: string) {
