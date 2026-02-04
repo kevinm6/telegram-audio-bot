@@ -59,7 +59,7 @@ export default {
         const statusMsgResponse = await sendMessage(
           env.BOT_TOKEN,
           chatId,
-          "_Transcribing..._",
+          `_${escapeMarkdown("Transcribing...")}_`,
           message.message_id ?? null,
         );
         const statusMsgData: any = await statusMsgResponse.json();
@@ -137,13 +137,17 @@ async function sendMessage(
   });
 
   if (!res.ok) {
-    const errorBody = await res.text();
-    console.error("Telegram send error:\n", errorBody);
+    const errorRes = res.clone(); // avoid already consumed streamed res
+    console.error("Telegram send error:\n", errorRes);
   }
   
   return res;
 }
 
 function escapeMarkdown(text: string) {
-  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, "\\$&");
+  /**
+   * Escapes all 18 reserved characters required by Telegram
+   * @see https://core.telegram.org/bots/api#markdownv2-style
+  */
+  return text.replace(/([_*[]()~`>#+-=|{}.!])/g, "\\$1");
 }
