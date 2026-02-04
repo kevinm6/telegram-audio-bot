@@ -1,3 +1,6 @@
+// It will be replaced by the real hash string during build/deploy
+declare const DEPLOYED_HASH = "";
+
 export interface Env {
   AI: any;
   BOT_TOKEN: string;
@@ -35,6 +38,15 @@ export default {
           chatId,
           "🎙 *Audio2Text Bot*\nSend me a voice message and I'll transcribe it using Whisper AI.",
         );
+        return new Response("OK");
+      }
+
+      if (text === "/verifySha256") {
+        const verifyMessage =
+          userLang === "it"
+            ? `🔐 **Verifica Trasparenza**\nHash SHA-256 del codice sorgente:\n\`${DEPLOYED_HASH}\``
+            : `🔐 **Transparency Verification**\nSource code SHA-256 Hash:\n\`${DEPLOYED_HASH}\``;
+        await sendMessage(env.BOT_TOKEN, chatId, verifyMessage);
         return new Response("OK");
       }
 
